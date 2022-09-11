@@ -1,3 +1,4 @@
+print('Start dataset cleaning')
 try:
     input_file = open('dataset/bank-additional-full.csv', 'r')
 
@@ -16,3 +17,9 @@ try:
 except:
     print('An error is occurred while the dataset was processing')
 
+print('Replacing done')
+print('')
+print('Start data check')
+
+
+print('Cleaning done')
