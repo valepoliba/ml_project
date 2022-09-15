@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+from sklearn.preprocessing import LabelEncoder
 
 
 def change_ds():
@@ -53,4 +54,20 @@ except FileNotFoundError:
     print('Dataset not found')
 else:
     check_ds()
-    print('Cleaning done')
+
+print('Conversion')
+
+"""CONVERT CATEGORICAL TO NUMERICAL"""
+df = pd.read_csv('dataset/bank-full.csv')
+le = LabelEncoder()
+list_to_convert = ['job', 'marital', 'default', 'housing', 'loan', 'poutcome', 'y']
+for x in list_to_convert:
+    label = le.fit_transform(df[x])
+    df.drop(x, axis=1, inplace=True)
+    df[x] = label
+    print(df[x])
+    print('\n')
+
+df = df.drop(['education', 'contact', 'month', 'day_of_week', 'duration', 'pdays', 'euribor3m', 'nr_employed'], axis=1)
+df.to_csv('dataset/dataset.csv', index=False)
+print('Cleaning done')
