@@ -7,6 +7,7 @@ def change_ds():
     try:
         input_file = open('dataset/bank-additional-full.csv', 'r')
 
+        """items in a tuple into a string"""
         input_file = ''.join([i for i in input_file])
 
         input_file = input_file.replace('"', '')
