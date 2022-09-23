@@ -1,8 +1,11 @@
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
+from logistic_regression import LogisticRegression
+from neural_network import NeuralNetwork
 
 np.random.seed(42)
+plt.style.use(['ggplot'])
 
 df = pd.read_csv('dataset/dataset.csv')
 
@@ -38,3 +41,49 @@ y_train = y_train[:validation_index]
 # bias colum to the validation and train features
 x_train = np.c_[np.ones(x_train.shape[0]), x_train]
 x_valid = np.c_[np.ones(x_valid.shape[0]), x_valid]
+
+
+def neural():
+    nn = NeuralNetwork(learning_rate=0.001, epochs=1000, lmd=1, layers=[x_train.shape[1], 100, 1])
+
+    nn.fit(x_train, y_train)
+
+    nn.plot_loss()
+
+    preds = nn.predict(x_test)
+
+    print(nn.accuracy(y_test, preds[-1]))
+
+
+def logistic():
+    logistic = LogisticRegression(n_features=x_train.shape[1], learning_rate=0.005, n_steps=1000, lmd=8)
+    cost_history, cost_history_val = logistic.fit_reg(x_train, y_train, x_valid, y_valid)
+
+
+    print(f'''Thetas: {*logistic.theta,}''')
+    print(f'''Final train BCE {cost_history[-1]:.3f}''')
+    print(f'''Final validation BCE {cost_history_val[-1]:.3f}''')
+
+
+    # plot loss curves
+
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    ax.set_ylabel('J(Theta)')
+    ax.set_xlabel('Iterations')
+    c, = ax.plot(range(logistic.n_steps), cost_history, 'b.')
+    cv, = ax.plot(range(logistic.n_steps), cost_history_val, 'r+')
+    c.set_label('Train cost')
+    cv.set_label('Valid cost')
+    ax.legend()
+
+    plt.show()
+
+
+    preds = logistic.predict(x_test, thrs=0.5)
+
+    print(f'''Performance: {((preds == y_test).mean())}''')
+
+
+logistic()
+# neural()
