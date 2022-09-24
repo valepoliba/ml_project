@@ -16,38 +16,12 @@ class LogisticRegression:
         self.lmd_[0] = 0
 
     def _sigmoid(self, x):
-        # return 1 / (1 + np.exp(-x))
-        """
-        compute the sigmoid of input value
-        :param z: an array-like with shape (m,) as input elements
-        :return: an array-like with shape (m,). Values are in sigmoid range
-        """
+        #return 1 / (1 + np.exp(-x))
         return expit(x)
 
+    # lambda to provide regularization approach
     def fit(self, X, y, X_val, y_val):
         m = len(X)
-        m_val = len(X_val)
-        theta_history = np.zeros((self.n_steps, self.theta.shape[0]))
-        cost_history = np.zeros(self.n_steps)
-        cost_history_val = np.zeros(self.n_steps)
-
-        for step in range(0, self.n_steps):
-            preds = self._sigmoid(np.dot(X, self.theta))
-            preds_val = self._sigmoid(np.dot(X_val, self.theta))
-
-            error = preds - y
-
-            cost_history[step] = -(1/m) * (np.dot(y.T, np.log(preds)) + np.dot((1-y.T), np.log(1-preds)))
-            cost_history_val[step] = -(1/m) * (np.dot(y_val.T, np.log(preds_val)) + np.dot((1-y_val.T), np.log(1-preds_val)))
-
-            self.theta = self.theta - ((1/m) * self.learning_rate * np.dot(X.T, error))
-            theta_history[step, :] = self.theta.T
-
-        return cost_history, cost_history_val
-
-    def fit_reg(self, X, y, X_val, y_val):
-        m = len(X)
-        m_val = len(X_val)
         theta_history = np.zeros((self.n_steps, self.theta.shape[0]))
         cost_history = np.zeros(self.n_steps)
         cost_history_val = np.zeros(self.n_steps)
