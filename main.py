@@ -68,7 +68,7 @@ def logistic():
 
     #scores = cross_val_score(logistic, x_train, y_train, scoring='accuracy', cv=10, n_jobs=1)
     #print('Accuracy: %.3f (%.3f)' % (mean(scores), std(scores)))
-
+    """
     print(f'''Thetas: {*logistic.theta,}''')
     print(f'''Final train BCE {cost_history[-1]:.3f}''')
     print(f'''Final validation BCE {cost_history_val[-1]:.3f}''')
@@ -85,6 +85,10 @@ def logistic():
 
     preds = logistic.predict(x_test, thrs=0.5)
     print(f'''Performance: {((preds == y_test).mean())}''')
+    """
+
+
+    print(logistic)
 
 
 logistic()
