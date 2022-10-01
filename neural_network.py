@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics import confusion_matrix
 
 np.random.seed(42)
 
@@ -131,3 +132,8 @@ class NeuralNetwork():
         plt.ylabel("loss")
         plt.title("Loss curve")
         plt.show()
+
+    def confusion_matrix(self, y, y_preds):
+        # The result is telling us that we have first row sum of correct predictions and second row sum of incorrect predictions.
+        cm = confusion_matrix(y, y_preds)
+        return cm

@@ -12,16 +12,7 @@ import seaborn as sns
 
 df = pd.read_csv('dataset/dataset.csv')
 
-count_y = df['y'].value_counts()
-print(count_y)
-sns.countplot(x='y', data=df, palette='hls')
-plt.show()
-count_no_sub = len(df[df['y'] == 0])
-count_sub = len(df[df['y'] == 1])
-pct_of_no_sub = count_no_sub/(count_no_sub+count_sub)
-print("Percentage of no subscription is ", pct_of_no_sub*100)
-pct_of_sub = count_sub/(count_no_sub+count_sub)
-print("Percentage of subscription ", pct_of_sub*100)
+
 
 
 x = df.drop(['y'], axis=1).values
@@ -31,6 +22,8 @@ logreg = LogisticRegression(max_iter=1000)
 logreg.fit(X_train, y_train)
 y_pred = logreg.predict(X_test)
 print('Accuracy of logistic regression classifier on test set: {:.2f}'.format(logreg.score(X_test, y_test)))
+
+
 
 # The result is telling us that we have first row sum of correct predictions and second row sum of incorrect predictions.
 confusion_matrix = confusion_matrix(y_test, y_pred)
@@ -43,7 +36,7 @@ logit_roc_auc = roc_auc_score(y_test, logreg.predict(X_test))
 fpr, tpr, thresholds = roc_curve(y_test, logreg.predict_proba(X_test)[:,1])
 plt.figure()
 plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % logit_roc_auc)
-plt.plot([0, 1], [0, 1],'r--')
+plt.plot([0, 1], [0, 1], 'r--')
 plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.xlabel('False Positive Rate')
