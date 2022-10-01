@@ -4,9 +4,10 @@ from sklearn.metrics import confusion_matrix
 
 np.random.seed(42)
 
-class NeuralNetwork():
 
-    # 3 layers with 10 node first layer...wait and bias
+class NeuralNetwork:
+
+    # 3 layers with 10 node (neuron) first layer
     def __init__(self, learning_rate=0.001, lmd=0, epochs=100, layers=[10, 5, 5]):
         self.w = {}
         self.b = {}
@@ -119,11 +120,11 @@ class NeuralNetwork():
         self.X = X_test
         AL = self.forward_propagation()
         layers = len(AL) // 2
-        Y_preds = AL['A' + str(layers)]
-        return np.round(Y_preds)
+        y_predict = AL['A' + str(layers)]
+        return np.round(y_predict)
 
-    def accuracy(self, y, y_preds):
-        acc = float(sum(y == y_preds) / len(y) * 100)
+    def accuracy(self, y, y_predict):
+        acc = float(sum(y == y_predict) / len(y) * 100)
         return acc
 
     def plot_loss(self):
@@ -133,7 +134,7 @@ class NeuralNetwork():
         plt.title("Loss curve")
         plt.show()
 
-    def confusion_matrix(self, y, y_preds):
+    def confusion_matrix(self, y, y_predict):
         # The result is telling us that we have first row sum of correct predictions and second row sum of incorrect predictions.
-        cm = confusion_matrix(y, y_preds)
+        cm = confusion_matrix(y, y_predict)
         return cm

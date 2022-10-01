@@ -30,8 +30,8 @@ std = X_train.std(axis=0)
 
 X_train = (X_train - mean)/std
 X_test = (X_test - mean)/std
-
-nn = NeuralNetwork(learning_rate=0.001, lmd=1, epochs=1000, layers=[X_train.shape[1], 100, 1])
+# nn = NeuralNetwork(learning_rate=0.2, lmd=1, epochs=1000, layers=[X_train.shape[1], 100, 100, 1])
+nn = NeuralNetwork(learning_rate=0.2, lmd=1, epochs=5000, layers=[X_train.shape[1], 100, 100, 1])
 
 nn.fit(X_train, y_label_train)
 
