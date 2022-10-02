@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from neural_network import NeuralNetwork
 
 np.random.seed(42)
+plt.style.use(['ggplot'])
 
 df = pd.read_csv('dataset/dataset.csv')
 
-# shuffle to avoid group bias
 index = df.index
 heart_df = df.iloc[np.random.choice(index, len(index))]
 
