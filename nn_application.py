@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from neural_network import NeuralNetwork
@@ -6,37 +5,38 @@ from neural_network import NeuralNetwork
 np.random.seed(42)
 plt.style.use(['ggplot'])
 
-df = pd.read_csv('dataset/dataset.csv')
 
-index = df.index
-heart_df = df.iloc[np.random.choice(index, len(index))]
+def nnapplication(df):
 
-X = df.drop(['y'], axis=1).values
-y_label = df['y'].values
+    index = df.index
+    df = df.iloc[np.random.choice(index, len(index))]
 
-train_index = round(len(X) * 0.8)
+    X = df.drop(['y'], axis=1).values
+    y_label = df['y'].values
 
-X_train = X[:train_index]
-y_label_train = y_label[:train_index]
+    train_index = round(len(X) * 0.8)
 
-X_test = X[train_index:]
-y_label_test = y_label[train_index:]
+    X_train = X[:train_index]
+    y_label_train = y_label[:train_index]
 
-mean = X_train.mean(axis=0)
-std = X_train.std(axis=0)
+    X_test = X[train_index:]
+    y_label_test = y_label[train_index:]
 
-X_train = (X_train - mean)/std
-X_test = (X_test - mean)/std
+    mean = X_train.mean(axis=0)
+    std = X_train.std(axis=0)
 
-nn = NeuralNetwork(learning_rate=0.2, lmd=1, epochs=1000, layers=[X_train.shape[1], 100, 100, 1])
+    X_train = (X_train - mean) / std
+    X_test = (X_test - mean) / std
 
-nn.fit(X_train, y_label_train)
+    nn = NeuralNetwork(learning_rate=0.2, lmd=1, epochs=1000, layers=[X_train.shape[1], 100, 100, 1])
 
-nn.plot_loss()
+    nn.fit(X_train, y_label_train)
 
-y_predict = nn.predict(X_test)
+    nn.plot_loss()
 
-print('Accuracy: ', nn.accuracy(y_label_test, y_predict[-1]))
-print('Confusion matrix: \n', nn.confusion_matrix(y_label_test, y_predict[-1]))
+    y_predict = nn.predict(X_test)
 
-nn.roc_curvenn(y_label_test, y_predict[-1])
+    print('Accuracy: ', nn.accuracy(y_label_test, y_predict[-1]))
+    print('Confusion matrix: \n', nn.confusion_matrix(y_label_test, y_predict[-1]))
+
+    nn.roc_curvenn(y_label_test, y_predict[-1])
