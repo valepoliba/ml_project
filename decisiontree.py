@@ -1,13 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.tree import plot_tree
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_curve, roc_auc_score
-from sklearn.model_selection import KFold
-from sklearn.model_selection import cross_val_score
 from numpy import mean
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score
 
 
 np.random.seed(42)
@@ -18,11 +14,11 @@ def confusion_matrixdef(y, y_predict):
     return cm
 
 
-def roc_curvedt(y_test, X_test, clf):
-    clf_roc_auc = roc_auc_score(y_test, clf.predict(X_test))
-    fpr, tpr, thresholds = roc_curve(y_test, clf.predict_proba(X_test)[:, 1])
+def roc_curvedt(y_test, X_test, model):
+    model_roc_auc = roc_auc_score(y_test, model.predict(X_test))
+    fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
     plt.figure()
-    plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % clf_roc_auc)
+    plt.plot(fpr, tpr, label='Decision Tree (area = %0.2f)' % model_roc_auc)
     plt.plot([0, 1], [0, 1], 'r--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
@@ -47,20 +43,20 @@ def decisiontreeapplication(df):
 
     cv = KFold(n_splits=10, random_state=1, shuffle=True)
 
-    clf = DecisionTreeClassifier(criterion="entropy", min_samples_leaf=3, max_depth=5, random_state=42)
+    dectree = DecisionTreeClassifier(criterion="entropy", min_samples_leaf=3, max_depth=5, random_state=42)
 
-    scores = cross_val_score(clf, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
-    score2 = mean(scores) * 100
-    print('Accuracy of K-fold validation: ', score2)
+    scores = cross_val_score(dectree, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
+    accuracy_score = mean(scores) * 100
+    print('Accuracy of K-fold validation: ', accuracy_score)
 
-    clf = clf.fit(X_train, y_train)
+    dectree = dectree.fit(X_train, y_train)
 
-    y_predict = clf.predict(X_test)
+    y_predict = dectree.predict(X_test)
 
     plt.figure(figsize=(12, 8))
-    plot_tree(clf.fit(X_train, y_train))
+    plot_tree(dectree.fit(X_train, y_train))
     plt.show()
 
     print('Accuracy: ', accuracy(y_test, y_predict))
     print('Confusion matrix: \n', confusion_matrixdef(y_test, y_predict))
-    roc_curvedt(y_test, X_test, clf)
+    roc_curvedt(y_test, X_test, dectree)

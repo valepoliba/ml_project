@@ -1,76 +1,58 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from scipy.special import expit
-from sklearn import metrics
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import roc_curve
+import numpy as np
+from numpy import mean
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split, KFold, cross_val_score
+from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score
+
 
 np.random.seed(42)
 
 
-class LogisticRegression:
+def confusion_matrixdef(y, y_predict):
+    cm = confusion_matrix(y, y_predict)
+    return cm
 
-    def __init__(self, learning_rate=1e-2, n_steps=2000, n_features=1, lmd=1):
-        self.learning_rate = learning_rate
-        self.n_steps = n_steps
-        self.theta = np.random.rand(n_features)
-        self.lmd = 1
-        self.lmd_ = np.full((n_features,), lmd)
-        self.lmd_[0] = 0
 
-    @staticmethod
-    def _sigmoid(x):
-        # return 1 / (1 + np.exp(-x))
-        return expit(x)
+def roc_curvedt(y_test, X_test, model):
+    model_roc_auc = roc_auc_score(y_test, model.predict(X_test))
+    fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
+    plt.figure()
+    plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % model_roc_auc)
+    plt.plot([0, 1], [0, 1], 'r--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic')
+    plt.legend(loc="lower right")
+    plt.show()
 
-    def fit(self, X, y, X_val, y_val):
-        m = len(X)
-        theta_history = np.zeros((self.n_steps, self.theta.shape[0]))
-        cost_history = np.zeros(self.n_steps)
-        cost_history_val = np.zeros(self.n_steps)
 
-        for step in range(0, self.n_steps):
-            preds = self._sigmoid(np.dot(X, self.theta))
-            preds_val = self._sigmoid(np.dot(X_val, self.theta))
+def accuracy(y, y_predict):
+    acc = float(sum(y == y_predict) / len(y) * 100)
+    return acc
 
-            error = preds - y
 
-            self.theta = self.theta - ((1 / m) * self.learning_rate * (np.dot(X.T, error) + (self.theta.T * self.lmd_)))
-            theta_history[step, :] = self.theta.T
+def logisticapplication(df):
 
-            loss = -(1/m) * (np.dot(y.T, np.log(preds)) + np.dot((1-y.T), np.log(1-preds)))
-            loss_val = -(1 / m) * (np.dot(y_val.T, np.log(preds_val)) + np.dot((1 - y_val.T), np.log(1 - preds_val)))
+    X = df.drop(['y'], axis=1).values
+    y = df['y'].values
 
-            reg = (self.lmd/(2*m)) * np.dot(self.theta.T[1:], self.theta[1:])
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-            cost_history[step] = loss + reg
-            cost_history_val[step] = loss_val + reg
+    cv = KFold(n_splits=10, random_state=1, shuffle=True)
 
-        return cost_history, cost_history_val
+    logreg = LogisticRegression(max_iter=1000)
 
-    def predict(self, X, thrs):
-        X_preds = np.c_[np.ones(X.shape[0]), X]
-        return self._sigmoid(np.dot(X_preds, self.theta)) >= thrs
+    scores = cross_val_score(logreg, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
+    accuracy_score = mean(scores) * 100
+    print('Accuracy of K-fold validation: ', accuracy_score)
 
-    @staticmethod
-    def confusion_matrix(y, y_predict):
-        cm = confusion_matrix(y, y_predict)
-        return cm
+    logreg.fit(X_train, y_train)
 
-    @staticmethod
-    def roc_curvenn(y, y_predict):
-        fpr, tpr, thresh = roc_curve(y, y_predict)
-        auc = metrics.auc(fpr, tpr)
-        plt.plot(fpr, tpr, label='ROC curve (area = %.2f)' % auc)
-        plt.plot([0, 1], [0, 1], linestyle='--', lw=2, color='r', label='Random guess')
-        plt.title('ROC curve')
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.grid()
-        plt.legend()
-        plt.show()
+    y_predict = logreg.predict(X_test)
 
-    @staticmethod
-    def accuracy(y, y_predict):
-        acc = float(sum(y == y_predict) / len(y) * 100)
-        return acc
+    print('Accuracy: ', accuracy(y_test, y_predict))
+    print('Confusion matrix: \n', confusion_matrixdef(y_test, y_predict))
+    roc_curvedt(y_test, X_test, logreg)

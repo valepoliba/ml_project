@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import logistic_application as la
-import nn_application as nna
+import logistic_regression as la
+import neural_network as nna
 import decisiontree as dta
 
 np.random.seed(42)
