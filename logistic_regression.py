@@ -1,37 +1,10 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import evaluation as ev
 from numpy import mean
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
-from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score
-
 
 np.random.seed(42)
-
-
-def confusion_matrixdef(y, y_predict):
-    cm = confusion_matrix(y, y_predict)
-    return cm
-
-
-def roc_curvedt(y_test, X_test, model):
-    model_roc_auc = roc_auc_score(y_test, model.predict(X_test))
-    fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
-    plt.figure()
-    plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % model_roc_auc)
-    plt.plot([0, 1], [0, 1], 'r--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic')
-    plt.legend(loc="lower right")
-    plt.show()
-
-
-def accuracy(y, y_predict):
-    acc = float(sum(y == y_predict) / len(y) * 100)
-    return acc
 
 
 def logisticapplication(df):
@@ -53,6 +26,6 @@ def logisticapplication(df):
 
     y_predict = logreg.predict(X_test)
 
-    print('Accuracy: ', accuracy(y_test, y_predict))
-    print('Confusion matrix: \n', confusion_matrixdef(y_test, y_predict))
-    roc_curvedt(y_test, X_test, logreg)
+    print('Accuracy: ', ev.accuracy(y_test, y_predict))
+    ev.confusion_matrixdef(y_test, y_predict)
+    ev.roc_curvedt(y_test, X_test, logreg)

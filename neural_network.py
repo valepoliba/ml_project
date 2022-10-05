@@ -1,36 +1,10 @@
-import matplotlib.pyplot as plt
 import numpy as np
+import evaluation as ev
 from numpy import mean
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
-from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score
 
 np.random.seed(42)
-
-
-def confusion_matrixdef(y, y_predict):
-    cm = confusion_matrix(y, y_predict)
-    return cm
-
-
-def roc_curvedt(y_test, X_test, model):
-    model_roc_auc = roc_auc_score(y_test, model.predict(X_test))
-    fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:, 1])
-    plt.figure()
-    plt.plot(fpr, tpr, label='Neural Network (area = %0.2f)' % model_roc_auc)
-    plt.plot([0, 1], [0, 1], 'r--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic')
-    plt.legend(loc="lower right")
-    plt.show()
-
-
-def accuracy(y, y_predict):
-    acc = float(sum(y == y_predict) / len(y) * 100)
-    return acc
 
 
 def nnapplication(df):
@@ -42,8 +16,7 @@ def nnapplication(df):
 
     cv = KFold(n_splits=10, random_state=1, shuffle=True)
 
-    # neuraln = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-    neuraln = MLPClassifier(random_state=1)
+    neuraln = MLPClassifier(activation='logistic', alpha=1e-3, max_iter=1000, random_state=1)
 
     scores = cross_val_score(neuraln, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
     accuracy_score = mean(scores) * 100
@@ -53,6 +26,6 @@ def nnapplication(df):
 
     y_predict = neuraln.predict(X_test)
 
-    print('Accuracy: ', accuracy(y_test, y_predict))
-    print('Confusion matrix: \n', confusion_matrixdef(y_test, y_predict))
-    roc_curvedt(y_test, X_test, neuraln)
+    print('Accuracy: ', ev.accuracy(y_test, y_predict))
+    ev.confusion_matrixdef(y_test, y_predict)
+    ev.roc_curvedt(y_test, X_test, neuraln)
