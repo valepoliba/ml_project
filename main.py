@@ -4,7 +4,7 @@ import seaborn as sns
 import logistic_regression as la
 import neural_network as nna
 import decisiontree as dta
-"""
+
 plt.style.use(['ggplot'])
 df = pd.read_csv('dataset/bank-full.csv')
 
@@ -38,12 +38,12 @@ plt.title('Histogram of Age')
 plt.xlabel('Age')
 plt.ylabel('Frequency')
 plt.show()
-"""
+
 df_modified = pd.read_csv('dataset/dataset.csv')
 
-#print('1-Logistic regression | 2-Neural Network | 3-Decision Tree')
-#edit = input('Input: \n')
-edit = '2'
+print('1-Logistic regression | 2-Neural Network | 3-Decision Tree')
+edit = input('Input: \n')
+
 if edit == '1':
     la.logisticapplication(df_modified)
 elif edit == '2':

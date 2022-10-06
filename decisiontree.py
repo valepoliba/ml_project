@@ -17,7 +17,7 @@ def decisiontreeapplication(df):
 
     cv = KFold(n_splits=10, random_state=1, shuffle=True)
 
-    dectree = DecisionTreeClassifier(criterion="entropy", min_samples_leaf=3, max_depth=5, random_state=42)
+    dectree = DecisionTreeClassifier(criterion="entropy", max_depth=8, min_samples_leaf=2, random_state=42, max_leaf_nodes=52)
 
     scores = cross_val_score(dectree, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
     accuracy_score = mean(scores) * 100
