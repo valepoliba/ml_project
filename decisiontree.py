@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import evaluation as ev
+from datetime import datetime
 from numpy import mean
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.model_selection import train_test_split, KFold, cross_val_score
@@ -9,6 +10,8 @@ np.random.seed(42)
 
 
 def decisiontreeapplication(df):
+
+    start_time = datetime.now()
 
     X = df.drop(['y'], axis=1).values
     y = df['y'].values
@@ -34,3 +37,7 @@ def decisiontreeapplication(df):
     print('Accuracy: ', ev.accuracy(y_test, y_predict))
     ev.confusion_matrixdef(y_test, y_predict)
     ev.roc_curvedt(y_test, X_test, dectree)
+
+    end_time = datetime.now()
+
+    print('Execution time (second): {}'.format((end_time - start_time)))
